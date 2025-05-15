@@ -1,4 +1,4 @@
-name: memotakara_app
+name: MemoTakara
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -31,13 +31,47 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Giao tiếp REST API
+  http: 1.4.0
+  dio: ^5.8.0+1
+
+  # Lưu token, cấu hình local
+  shared_preferences: ^2.1.2
+
+  # Quản lý trạng thái
+  provider: ^6.1.1
+
+  # Điều hướng
+  go_router: ^15.1.2
+
+  # Xử lý JSON
+  json_annotation: ^4.8.1
+
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+
+  # Biểu đồ (cho phần thống kê)
+  fl_chart: ^1.0.0
+
+  # Lịch học và flashcard animation
+  table_calendar: ^3.0.9
+  flip_card: ^0.7.0
+
+  # Notification
+#  fluttertoast: ^8.2.4
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  # UI & icon
+  flutter_svg: ^2.0.10+1
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.4.8
+  json_serializable: ^6.7.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
