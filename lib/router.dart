@@ -20,7 +20,7 @@ final GoRouter appRouter = GoRouter(
     final isGoingToAuth = state.fullPath == '/login' || state.fullPath == '/register';
 
     // Nếu chưa login và cố vào các trang khác => redirect về /login
-    if (!loggedIn && !isGoingToAuth) return '/login';
+    if (!loggedIn && !isGoingToAuth) return '/';
 
     // Nếu đã login mà vẫn vào login/register => redirect về Home
     if (loggedIn && isGoingToAuth) return '/';
@@ -31,7 +31,7 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomeScreen(isLoggedIn: true),
+      builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
       path: '/login',

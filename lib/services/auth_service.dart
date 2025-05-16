@@ -46,7 +46,9 @@ class AuthService {
         'password': password,
       });
 
-      if (response.statusCode == 200 && response.data['token'] != null) {
+      if (response.statusCode! >= 200 &&
+          response.statusCode! < 300 &&
+          response.data['token'] != null) {
         await saveToken(response.data['token']);
         return true;
       }

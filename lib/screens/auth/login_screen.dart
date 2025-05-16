@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:MemoTakara/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,75 +14,107 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
   void _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
-
     setState(() => isLoading = true);
-
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-
-    final success = await AuthService.login(email, password);
-
+    final success = await AuthService.login(
+      emailController.text.trim(),
+      passwordController.text,
+    );
     setState(() => isLoading = false);
 
     if (success) {
-      if (!mounted) return;
-      context.go('/'); // Điều hướng về trang chủ
+      Provider.of<AuthProvider>(context, listen: false).setLoggedIn(true);
+      context.go('/');
     } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.')),
-      );
+      _showError("Đăng nhập thất bại. Vui lòng thử lại.");
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Đăng nhập')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Vui lòng nhập email'
-                    : null,
+              // Ảnh đầu trang
+              Image.asset(
+                'assets/img/MemoTakara.png',
+                height: screenHeight * 0.56,
+                fit: BoxFit.contain,
               ),
-              TextFormField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Mật khẩu'),
-                obscureText: true,
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Vui lòng nhập mật khẩu'
-                    : null,
+
+              // Form trắng bo tròn
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Đăng nhập',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+
+                    const SizedBox(height: 24),
+                    TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Mật khẩu',
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                    ),
+
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : _handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Đăng nhập'),
+                    ),
+
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () => context.push('/register'),
+                      child: const Text(
+                        'Chưa có tài khoản? Đăng ký',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: isLoading ? null : _handleLogin,
-                child: isLoading
-                    ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : const Text('Đăng nhập'),
-              ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  context.go('/register');
-                },
-                child: const Text('Chưa có tài khoản? Đăng ký'),
-              )
             ],
           ),
         ),

@@ -4,7 +4,10 @@ import '../models/collection_model.dart';
 class CollectionCard extends StatelessWidget {
   final Collection collection;
 
-  const CollectionCard({super.key, required this.collection});
+  const CollectionCard({
+    super.key,
+    required this.collection,
+  });
 
   @override
   Widget build(BuildContext context) {
