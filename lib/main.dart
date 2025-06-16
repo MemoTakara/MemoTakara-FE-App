@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'router.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final authProvider = AuthProvider();
+  await authProvider.init();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider()..checkLoginStatus(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
+        // Các provider khác
+      ],
       child: const MemoTakaraApp(),
     ),
   );
@@ -18,11 +26,20 @@ class MemoTakaraApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    if (!authProvider.initialized) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Memo Takara',
       theme: ThemeData(
-        primaryColor: Color(0xff166dba),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff166dba)),
         scaffoldBackgroundColor: const Color(0xfff1f2ff),
         textTheme: const TextTheme(
           labelMedium: TextStyle(color: Colors.black),
@@ -41,7 +58,7 @@ class MemoTakaraApp extends StatelessWidget {
           ),
         ),
       ),
-      routerConfig: appRouter,
+      routerConfig: appRouter, // Phải dùng go_router có check trạng thái login
     );
   }
 }

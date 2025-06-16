@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 class AppBarWithAuth extends StatelessWidget implements PreferredSizeWidget {
   final bool isLoggedIn;
@@ -15,23 +16,24 @@ class AppBarWithAuth extends StatelessWidget implements PreferredSizeWidget {
   });
 
   Future<void> _handleLogout(BuildContext context) async {
-    await AuthService.logout();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    await authProvider.logout();
     context.go('/login');
   }
+
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('Memo Takara'),
       actions: [
         if (!isLoggedIn) ...[
           TextButton(
             onPressed: onLogin,
-            child: const Text('Đăng nhập', style: TextStyle(color: Colors.white)),
+            child: const Text('Đăng nhập', style: TextStyle(color: Colors.black)),
           ),
           TextButton(
             onPressed: onRegister,
-            child: const Text('Đăng ký', style: TextStyle(color: Colors.white)),
+            child: const Text('Đăng ký', style: TextStyle(color: Colors.black)),
           ),
         ] else ...[
           IconButton(

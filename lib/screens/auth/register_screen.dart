@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -35,11 +34,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     setState(() => isLoading = true);
-    final success = await AuthService.register(username, email, password);
+    final success = await Provider.of<AuthProvider>(
+      context,
+      listen: false
+    ).register(username, email, password);
     setState(() => isLoading = false);
 
     if (success) {
-      Provider.of<AuthProvider>(context, listen: false).setLoggedIn(true);
       context.go('/');
     } else {
       _showError("Đăng ký thất bại. Vui lòng thử lại.");
@@ -57,6 +58,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0),
+        child: AppBar(
+          leading: Navigator.canPop(context)
+              ? IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          )
+              : null,
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -64,8 +76,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Ảnh đầu trang
               Image.asset(
                 'assets/img/MemoTakara.png',
-                // width: double.infinity,
-                height: screenHeight * 0.41,
+                width: 320,
+                height: screenHeight * 0.355,
                 fit: BoxFit.contain,
               ),
 
@@ -74,12 +86,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 1),
                     )
                   ],
                 ),
@@ -87,7 +102,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     const Text(
                       'Đăng ký',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
                     const SizedBox(height: 24),

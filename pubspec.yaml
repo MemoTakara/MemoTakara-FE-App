@@ -33,7 +33,6 @@ dependencies:
 
   # Giao tiếp REST API
   http: 1.4.0
-  dio: ^5.8.0+1
 
   # Lưu token, cấu hình local
   shared_preferences: ^2.1.2
