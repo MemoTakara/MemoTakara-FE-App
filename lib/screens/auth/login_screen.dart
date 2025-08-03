@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,14 +17,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() async {
     setState(() => isLoading = true);
-    final success = await AuthService.login(
+    // check TOKEN
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final success = await Provider.of<AuthProvider>(
+      context,
+      listen: false
+    ).login(
       emailController.text.trim(),
       passwordController.text,
     );
     setState(() => isLoading = false);
 
     if (success) {
-      Provider.of<AuthProvider>(context, listen: false).setLoggedIn(true);
+      // check TOKEN
+      final token = authProvider.token;
+      debugPrint('Login successful! Token: $token');
+
       context.go('/');
     } else {
       _showError("Đăng nhập thất bại. Vui lòng thử lại.");
@@ -42,6 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0),
+        child: AppBar(
+          leading: Navigator.canPop(context)
+              ? IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          )
+              : null,
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -49,7 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
               // Ảnh đầu trang
               Image.asset(
                 'assets/img/MemoTakara.png',
-                height: screenHeight * 0.56,
+                width: 320,
+                height: screenHeight * 0.51,
                 fit: BoxFit.contain,
               ),
 
@@ -58,12 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 1),
                     )
                   ],
                 ),
@@ -71,7 +94,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                       'Đăng nhập',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
 
                     const SizedBox(height: 24),
@@ -106,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () => context.push('/register'),
+                      onPressed: () => context.go('/auth/register'),
                       child: const Text(
                         'Chưa có tài khoản? Đăng ký',
                         style: TextStyle(color: Colors.black),
