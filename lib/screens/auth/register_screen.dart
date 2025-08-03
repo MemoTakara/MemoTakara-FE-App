@@ -159,7 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () => context.push('/login'),
+                      onPressed: () => context.go('/auth/login'),
                       child: const Text(
                         'Đã có tài khoản? Đăng nhập',
                         style: TextStyle(color: Colors.black),

@@ -17,6 +17,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() async {
     setState(() => isLoading = true);
+    // check TOKEN
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     final success = await Provider.of<AuthProvider>(
       context,
       listen: false
@@ -27,6 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = false);
 
     if (success) {
+      // check TOKEN
+      final token = authProvider.token;
+      debugPrint('Login successful! Token: $token');
+
       context.go('/');
     } else {
       _showError("Đăng nhập thất bại. Vui lòng thử lại.");
@@ -125,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () => context.push('/register'),
+                      onPressed: () => context.go('/auth/register'),
                       child: const Text(
                         'Chưa có tài khoản? Đăng ký',
                         style: TextStyle(color: Colors.black),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/collection_model.dart';
+import '../models/collection.dart';
 
 class CollectionCard extends StatelessWidget {
   final Collection collection;
@@ -14,13 +14,13 @@ class CollectionCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.all(10),
       child: ListTile(
-        title: Text(collection.title),
-        subtitle: Text(collection.description),
+        title: Text(collection.name),
+        // subtitle: Text(collection.description),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.star, color: Colors.amber),
-            Text('${collection.star}'),
+            // Text('${collection.star}'),
           ],
         ),
       ),

@@ -23,7 +23,6 @@ void main() async {
 class MemoTakaraApp extends StatelessWidget {
   const MemoTakaraApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -39,17 +38,25 @@ class MemoTakaraApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff166dba)),
-        scaffoldBackgroundColor: const Color(0xfff1f2ff),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff166dba)),
+        // Loại bỏ scaffoldBackgroundColor để từng trang tự quản lý
         textTheme: const TextTheme(
           labelMedium: TextStyle(color: Colors.black),
         ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xff166dba),
+          foregroundColor: Colors.white,
+          elevation: 2,
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xff166dba), width: 2),
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xff166dba),
+            backgroundColor: const Color(0xff166dba),
             foregroundColor: Colors.white,
             minimumSize: const Size.fromHeight(48),
             shape: RoundedRectangleBorder(
@@ -57,8 +64,28 @@ class MemoTakaraApp extends StatelessWidget {
             ),
           ),
         ),
+        // Thêm theme cho các button khác
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xff166dba),
+            side: const BorderSide(color: Color(0xff166dba)),
+            minimumSize: const Size.fromHeight(48),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xff166dba),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0xff166dba),
+          foregroundColor: Colors.white,
+        ),
       ),
-      routerConfig: appRouter, // Phải dùng go_router có check trạng thái login
+      routerConfig: appRouter,
     );
   }
 }

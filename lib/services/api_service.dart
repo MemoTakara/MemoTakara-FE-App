@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 
 class ApiService {
-  static const Duration timeout = Duration(seconds: 10);
+  static const Duration timeout = Duration(seconds: 1000);
 
   static Map<String, String> get defaultHeaders => {
-    'Accept': 'application/json',
+    'Accept': 'application/vnd.api+json',
     'Content-Type': 'application/json',
   };
 
